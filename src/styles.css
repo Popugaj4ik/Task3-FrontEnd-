@@ -1,0 +1,22 @@
+.inline {
+    display: inline-block;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    background-color: aliceblue;
+}
+
+.border {
+    width: 20%;
+}
+
+.show {
+    width: 60%;
+}

@@ -1,0 +1,47 @@
+<div class="border inline"></div>
+<div class="inline show">
+    <mat-table [dataSource]="list" matsort>
+        <ng-container matColumnDef="flatNumber">
+            <mat-header-cell *matHeaderCellDef>Flat number</mat-header-cell>
+            <mat-cell *matCellDef="let flat">{{flat.flatNumber}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="flatFloor">
+            <mat-header-cell *matHeaderCellDef>Floor</mat-header-cell>
+            <mat-cell *matCellDef="let flat">{{flat.floor}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FlatRooms">
+            <mat-header-cell *matHeaderCellDef>Amount of rooms</mat-header-cell>
+            <mat-cell *matCellDef="let flat">{{flat.roomsCount}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FlatTenants">
+            <mat-header-cell *matHeaderCellDef>Amount of tenants</mat-header-cell>
+            <mat-cell *matCellDef="let flat">{{flat.tenantsCount}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FlatFullSpace">
+            <mat-header-cell *matHeaderCellDef>Full space m^2</mat-header-cell>
+            <mat-cell *matCellDef="let flat">{{flat.fullSpace}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FlatLivingSpace">
+            <mat-header-cell *matHeaderCellDef>Living space m^2</mat-header-cell>
+            <mat-cell *matCellDef="let flat">{{flat.livingSpace}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="FlatHouse">
+            <mat-header-cell *matHeaderCellDef>House</mat-header-cell>
+            <mat-cell *matCellDef="let flat">{{returnHouse()}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Buttons">
+            <mat-header-cell *matHeaderCellDef>
+                <i class="fa-solid fa-plus control-button plus" (click)="openDialog()"></i>
+                <input type="file" (change)="fileSelect($event)" #fileImportInput name="FileUpload" accept=".csv">
+            </mat-header-cell>
+            <mat-cell *matCellDef="let flat">
+                <i class="fa-solid fa-eye control-button" [routerLink]="['../../tenants-list',flat.id]"></i>
+                <i class="fa-solid fa-pen text-warning control-button edit" (click)="populateForm(flat)"></i>
+                <i class="far fa-trash-alt fa-lg text-danger control-button delete" (click)="onDelete(flat.id)"></i>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+        <mat-row *matRowDef="let flat; columns: columnsToDisplay"></mat-row>
+    </mat-table>
+</div>
+<div class="border inline"></div>

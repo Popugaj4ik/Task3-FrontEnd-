@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Enter house info</h2>
+<mat-dialog-content>
+    <form novalidate autocomplete="off" [formGroup]="form">
+        <input type="hidden" formControlName="id" />
+
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>House number</mat-label>
+                <input matInput required class="form-control form-control-lg" formControlName="number" />
+            </mat-form-field>
+        </div>
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>House street</mat-label>
+                <input matInput required class="form-control form-control-lg" required formControlName="street">
+            </mat-form-field>
+        </div>
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>City</mat-label>
+                <input matInput required class="form-control form-control-lg" required formControlName="city">
+            </mat-form-field>
+        </div>
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>Postal ID</mat-label>
+                <input matInput required class="form-control form-control-lg" required formControlName="postalID">
+            </mat-form-field>
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="btn btn-info btn-lg btn-block" mat-dialog-close [disabled]="form.invalid" type="submit" (click)="onSubmit()">SUBMIT</button>
+    <button class="btn btn-info btn-lg btn-block" mat-dialog-close>CLOSE</button>
+</mat-dialog-actions>

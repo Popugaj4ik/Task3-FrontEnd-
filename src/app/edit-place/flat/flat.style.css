@@ -1,0 +1,36 @@
+.control-button {
+    cursor: pointer;
+    width: 1cm;
+}
+
+.border {
+    width: 20%;
+}
+
+.show {
+    width: 60%;
+}
+
+.plus {
+    color: green;
+}
+
+.edit {
+    color: orange;
+}
+
+.delete {
+    color: red;
+}
+
+input.invalid {
+    border-color: red;
+}
+
+.mat-form-field {
+    width: 10cm;
+}
+
+.mat-table {
+    background-color: aliceblue;
+}

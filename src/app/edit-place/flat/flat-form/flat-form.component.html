@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>Enter flat info</h2>
+<mat-dialog-content>
+    <form novalidate autocomplete="off" [formGroup]="form">
+        <input type="hidden" formControlName="id">
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>Flat nubmer</mat-label>
+                <input matInput required class="form-control form-control-lg" formControlName="flatNumber">
+            </mat-form-field>
+        </div>
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>Flat floor</mat-label>
+                <input matInput required class="form-control form-control-lg" formControlName="floor">
+            </mat-form-field>
+        </div>
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>Amount of rooms</mat-label>
+                <input matInput required class="form-control form-control-lg" formControlName="roomsCount">
+            </mat-form-field>
+        </div>
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>Full space</mat-label>
+                <input matInput required class="form-control form-control-lg" formControlName="fullSpace">
+            </mat-form-field>
+        </div>
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>Living space</mat-label>
+                <input matInput required class="form-control form-control-lg" formControlName="livingSpace">
+            </mat-form-field>
+        </div>
+        <div class="form-group" *ngIf="isEditing()">
+            <mat-label>Select house</mat-label>
+            <mat-select required class="form-control form-control-lg" formControlName="houseID">
+                <mat-option *ngFor="let house of houseList" [value]="house.id">
+                    {{house.city}} {{house.street}}-{{house.number}} {{house.postalID}}
+                </mat-option>
+            </mat-select>
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="btn btn-info btn-lg btn-block" [disabled]="form.invalid" mat-dialog-close type="submit" (click)="onSubmit()">SUBMIT</button>
+    <button class="btn btn-info btn-lg btn-block" mat-dialog-close>CLOSE</button>
+</mat-dialog-actions>

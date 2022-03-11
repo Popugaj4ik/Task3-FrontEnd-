@@ -1,0 +1,60 @@
+<h2 mat-dialog-title>Enter tenant info</h2>
+<mat-dialog-content>
+    <form novalidate autocomplete="off" [formGroup]="form">
+        <input type="hidden" formControlName="id">
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>Tenant name</mat-label>
+                <input matInput required class="form-control form-control-lg" formControlName="name">
+            </mat-form-field>
+        </div>
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>Tenant surnaem</mat-label>
+                <input matInput required class="form-control form-control-lg" formControlName="surname">
+            </mat-form-field>
+        </div>
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>Tenant perasonal ID</mat-label>
+                <input matInput required class="form-control form-control-lg" formControlName="personalID">
+            </mat-form-field>
+        </div>
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>Tenant date of birth</mat-label>
+                <input matInput required class="form-control form-control-lg" formControlName="dateOfBirth" type="date">
+            </mat-form-field>
+        </div>
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>Tenant phone number</mat-label>
+                <input matInput required class="form-control form-control-lg" formControlName="phoneNumber">
+            </mat-form-field>
+        </div>
+        <div class="form-group">
+            <mat-form-field>
+                <mat-label>Tenant E-Mail</mat-label>
+                <input matInput required class="form-control form-control-lg" formControlName="eMail">
+            </mat-form-field>
+        </div>
+        <div class="form-group" *ngIf="isEditing()">
+            <mat-label>Select house</mat-label>
+            <mat-select required class="form-control form-control-lg" formControlName="tenantHouseID">
+                <mat-option *ngFor="let house of houseList" [value]="house.id">{{ house.city }} {{house.street}}-{{house.number}} {{house.postalID}}</mat-option>
+            </mat-select>
+        </div>
+        <div class="form-group" *ngIf="isEditing() && form.value.tenantHouseID">
+            <mat-label>Select Flat</mat-label>
+            <mat-select required class="form-control form-control-lg" formControlName="flatID">
+                <mat-option *ngFor="let flat of filterFlats(form.value.tenantHouseID)" [value]="flat.id">
+                    {{flat.flatNumber}}
+                </mat-option>
+            </mat-select>
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="btn btn-info btn-lg btn-block" type="submit" mat-dialog-close (click)="onSubmit()">SUBMIT</button>
+    <button class="btn btn-info btn-lg btn-block" mat-dialog-close>CANCEL</button>
+</mat-dialog-actions>

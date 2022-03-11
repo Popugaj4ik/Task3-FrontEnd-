@@ -1,0 +1,15 @@
+.mat-toolbar {
+    background-color: rgb(207, 226, 241);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 5%;
+}
+
+.span {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.control-button {
+    cursor: pointer;
+}

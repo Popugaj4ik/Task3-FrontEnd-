@@ -1,0 +1,35 @@
+<div class="border inline"></div>
+<div class="inline show">
+    <mat-table [dataSource]="list" matSort>
+        <ng-container matColumnDef="houseNumber">
+            <mat-header-cell *matHeaderCellDef>Number</mat-header-cell>
+            <mat-cell *matCellDef="let house">{{house.number}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="houseStreet">
+            <mat-header-cell *matHeaderCellDef>Street</mat-header-cell>
+            <mat-cell *matCellDef="let house">{{house.street}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="houseCity">
+            <mat-header-cell *matHeaderCellDef>City</mat-header-cell>
+            <mat-cell *matCellDef="let house">{{house.city}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="housePostalID">
+            <mat-header-cell *matHeaderCellDef>Postal ID</mat-header-cell>
+            <mat-cell *matCellDef="let house">{{house.postalID}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Buttons">
+            <mat-header-cell *matHeaderCellDef>
+                <i class="fa-solid fa-plus control-button plus" (click)="openDialog()"></i>
+                <input type="file" (change)="fileSelect($event)" #fileImportInput name="FileUpload" accept=".csv">
+            </mat-header-cell>
+            <mat-cell *matCellDef=" let house ">
+                <i class="fa-solid fa-eye control-button " [routerLink]="[ '../flats-list',house.id]"></i>
+                <i class="fa-solid fa-pen control-button edit" (click)="populateForm(house)"></i>
+                <i class="far fa-trash-alt fa-lg text-danger control-button delete" (click)="onDelete(house.id)"></i>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="columnsToDisplay "></mat-header-row>
+        <mat-row *matRowDef="let house; columns: columnsToDisplay "></mat-row>
+    </mat-table>
+</div>
+<div class="border inline"></div>

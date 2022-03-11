@@ -1,0 +1,46 @@
+<div class="border inline"></div>
+<div class="inline show">
+    <mat-table [dataSource]="list" matsort>
+        <ng-container matColumnDef="tenantName">
+            <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+            <mat-cell *matCellDef="let tenant">{{tenant.name}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="tenantSurname">
+            <mat-header-cell *matHeaderCellDef>Surname</mat-header-cell>
+            <mat-cell *matCellDef="let tenant">{{tenant.surname}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="tenantPersonalID">
+            <mat-header-cell *matHeaderCellDef>Personal ID</mat-header-cell>
+            <mat-cell *matCellDef="let tenant">{{tenant.personalID}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="tenantDateOfBirth">
+            <mat-header-cell *matHeaderCellDef>Date of birth</mat-header-cell>
+            <mat-cell *matCellDef="let tenant">{{tenant.dateOfBirth}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="tenantPhoneNumber">
+            <mat-header-cell *matHeaderCellDef>Phone number</mat-header-cell>
+            <mat-cell *matCellDef="let tenant">{{tenant.phoneNumber}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="tenantEMail">
+            <mat-header-cell *matHeaderCellDef>E-Mail</mat-header-cell>
+            <mat-cell *matCellDef="let tenant">{{tenant.eMail}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="tenantFlat">
+            <mat-header-cell *matHeaderCellDef>Flat</mat-header-cell>
+            <mat-cell *matCellDef="let tenant">{{returnFlatNumber()}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Buttons">
+            <mat-header-cell *matHeaderCellDef>
+                <i class="fa-solid fa-plus control-button plus" (click)="openDialog()"></i>
+                <input type="file" (change)="fileSelect($event)" #fileImportInput name="FileUpload" accept=".csv">
+            </mat-header-cell>
+            <mat-cell *matCellDef="let tenant">
+                <i class="fa-solid fa-pen control-button edit" (click)="populateForm(tenant)"></i>
+                <i class="far fa-trash-alt fa-lg control-button delete" (click)="onDelete(tenant.id)"></i>
+            </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+        <mat-row *matRowDef="let tenant; columns: columnsToDisplay"></mat-row>
+    </mat-table>
+</div>
+<div class="border inline"></div>

@@ -1,0 +1,25 @@
+.form {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 33%;
+}
+
+.line{
+    width: 100%;
+    height: 33%;
+}
+
+.form.form {
+    display: block;
+    text-align: center;
+}
+
+.auth-buttons{
+    margin: 2px;
+    display: inline-block;
+    width: 100px;
+}
