@@ -62,6 +62,8 @@ export class HouseComponent implements OnInit {
     var params = url.split('/');
 
     this.userID = parseInt(params[params.length - 2]);
+    
+    console.log(this.userID);
 
     this.service.getHousesByUser(this.userID).subscribe(res => this.list = res);
   }
