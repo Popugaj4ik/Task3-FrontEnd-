@@ -3,7 +3,6 @@ import { HttpClient } from "@angular/common/http";
 import { environment } from 'src/environments/environment';
 
 import { Tenant } from "./tenant.model";
-import { User } from './user.model';
 
 @Injectable({
     providedIn: 'root'

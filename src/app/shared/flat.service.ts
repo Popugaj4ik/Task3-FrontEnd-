@@ -3,7 +3,6 @@ import { Injectable } from "@angular/core";
 import { environment } from "src/environments/environment";
 
 import { Flat } from "./flat.model";
-import { User } from "./user.model";
 
 @Injectable({
     providedIn: 'root'
@@ -32,6 +31,6 @@ export class flatService {
     }
 
     getFlat(id: number) {
-        return this.http.get<Flat>(`${environment.serverURL}/api/Flats/${id}`);
+        return this.http.get<Flat>(`${environment.serverURL}/api/Flats/byID/${id}`);
     }
 }

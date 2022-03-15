@@ -3,7 +3,6 @@ import { HttpClient } from "@angular/common/http";
 import { environment } from 'src/environments/environment';
 
 import { House } from "./house.model";
-import { User } from './user.model';
 
 @Injectable({
     providedIn: 'root'
@@ -32,6 +31,6 @@ export class houseService {
     }
 
     getHouse(id: number) {
-        return this.http.get<House>(`${environment.serverURL}/api/Houses/${id}`)
+        return this.http.get<House>(`${environment.serverURL}/api/Houses/byID/${id}`)
     }
 }
