@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { GlobalVariables } from '../shared/global.variable';
-import { LoginRegisterService } from '../shared/LoginRegister.servise';
+import { LoginService } from '../shared/login.service';
 import { User } from '../shared/user.model';
 
 @Component({
@@ -17,7 +17,7 @@ export class AuthentificationComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private service: LoginRegisterService
+    private loginService: LoginService
   ) { }
 
   ngOnInit(): void {
@@ -28,19 +28,17 @@ export class AuthentificationComponent implements OnInit {
     GlobalVariables.isLoggedIn = false;
   }
 
-  onLogin() {
+  Login() {
     const get = this.form.value as User;
-    get.password = this.service.HashPassword(get.password);
 
     const user = new User();
     user.eMail = get.eMail;
     user.password = get.password;
 
-    this.service.loginUser(user).subscribe(
+    this.loginService.loginUser(user).subscribe(
       res => {
-        const user = res as User;
         GlobalVariables.isLoggedIn = true;
-        this.router.navigate([`/edit-list/${user.id}`]);
+        this.router.navigate([`/edit-list/${(res as User).id}`]);
       },
       err => {
         console.log(err);

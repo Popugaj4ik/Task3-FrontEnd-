@@ -16,9 +16,7 @@ export class tenantService {
     }
 
     getTenantsByUser(userID: number){
-        const u = new User();
-        u.id = userID;
-        return this.http.post<Tenant[]>(`${environment.serverURL}/api/Tenants/getByUser`, u);
+        return this.http.get<Tenant[]>(`${environment.serverURL}/api/Tenants/getByUser/${userID}`);
     }
 
     putTenant(tenant: Tenant) {
@@ -34,6 +32,6 @@ export class tenantService {
     }
 
     getTenant(id: number) {
-        return this.http.get<Tenant>(`${environment.serverURL}/api/Tenants/${id}`);
+        return this.http.get<Tenant>(`${environment.serverURL}/api/Tenants/byID/${id}`);
     }
 }

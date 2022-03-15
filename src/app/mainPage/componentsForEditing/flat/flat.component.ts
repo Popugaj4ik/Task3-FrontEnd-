@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FlatFormComponent } from './flat-form/flat-form.components';
 import { Flat } from 'src/app/shared/flat.model';
 import { House } from 'src/app/shared/house.model';
-import { ConfirmDialogModel, ConfirmPageComponent } from '../confirm-page/confirm-page.component';
+import { ConfirmDialogModel, ConfirmPageComponent } from 'src/app/confirm-page/confirm-page.component';
 import { flatService } from 'src/app/shared/flat.service';
 import { houseService } from 'src/app/shared/house.service';
 import { filter, switchMap } from 'rxjs';

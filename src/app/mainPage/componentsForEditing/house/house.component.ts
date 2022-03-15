@@ -3,7 +3,7 @@ import { MatDialog, MatDialogConfig, _MatDialogContainerBase } from '@angular/ma
 
 import { House } from 'src/app/shared/house.model';
 import { HouseFormComponent } from './house-form/house-form.component';
-import { ConfirmDialogModel, ConfirmPageComponent } from '../confirm-page/confirm-page.component';
+import { ConfirmDialogModel, ConfirmPageComponent } from 'src/app/confirm-page/confirm-page.component';
 import { houseService } from 'src/app/shared/house.service';
 import { filter, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';

@@ -10,15 +10,8 @@ export class OnlyLoggedInUsersGuard implements CanActivate {
             return true;
         }
         else {
-            alert("Please login or register");
+            
             return false;
         }
     }
-
-    private getUserID(route: ActivatedRouteSnapshot) {
-        var params = route.url.toString().split('/');
-
-        console.log(params);
-    }
-
 }

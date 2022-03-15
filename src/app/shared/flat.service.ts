@@ -16,9 +16,7 @@ export class flatService {
     }
 
     getFlatsByUser(userID: number) {
-        const u = new User();
-        u.id = userID;
-        return this.http.post<Flat[]>(`${environment.serverURL}/api/Flats/getByUser`, u);
+        return this.http.get<Flat[]>(`${environment.serverURL}/api/Flats/getByUser/${userID}`);
     }
 
     putFlat(flat: Flat) {

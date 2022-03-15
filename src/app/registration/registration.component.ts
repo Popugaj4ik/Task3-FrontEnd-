@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { GlobalVariables } from '../shared/global.variable';
-import { LoginRegisterService } from '../shared/LoginRegister.servise';
+import { RegistrationService } from '../shared/registration.service';
 import { User } from '../shared/user.model';
 
 @Component({
@@ -17,7 +17,7 @@ export class RegistrationComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private service: LoginRegisterService
+    private registrationService: RegistrationService
   ) { }
 
   ngOnInit(): void {
@@ -29,19 +29,17 @@ export class RegistrationComponent implements OnInit {
     GlobalVariables.isLoggedIn = false;
   }
 
-  onRegister() {
+  Register() {
     const user: User = this.form.value as User;
-    user.password = this.service.HashPassword(user.password);
-    this.service.registerUser(user).subscribe(
+    this.registrationService.registerUser(user).subscribe(
       res => {
-        if (res == null) {
+        if (res === null) {
           this.form.patchValue(new User());
           alert("Used e-mail or username already exist");
         }
         else {
-          const userNew = res as User;
           GlobalVariables.isLoggedIn = true;
-          this.router.navigate([`/edit-list/${userNew.id}`]);
+          this.router.navigate([`/edit-list/${(res as User).id}`]);
         }
 
       },

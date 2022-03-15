@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router} from '@angular/router';
 
 @Component({
-  selector: 'app-edit-place',
-  templateUrl: './edit-place.component.html',
-  styleUrls: ['./edit-place.component.css']
+  selector: 'app-mainPage',
+  templateUrl: './mainPage.component.html',
+  styleUrls: ['./mainPage.component.css']
 })
-export class EditPlaceComponent implements OnInit {
+export class MainPageComponent implements OnInit {
 
   public userName: string;
 

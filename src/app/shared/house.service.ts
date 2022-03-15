@@ -16,9 +16,7 @@ export class houseService {
     }
 
     getHousesByUser(userID: number) {
-        const u = new User();
-        u.id = userID;
-        return this.http.post<House[]>(`${environment.serverURL}/api/Houses/getByUser`, u);
+        return this.http.get<House[]>(`${environment.serverURL}/api/Houses/getByUser/${userID}`);
     }
 
     putHouse(house: House) {
