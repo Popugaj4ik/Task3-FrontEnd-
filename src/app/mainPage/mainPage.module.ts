@@ -6,6 +6,7 @@ import { MainPageComponent } from './mainPage.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { OnlyLoggedInUsersGuard } from '../shared/guards/OnlyLoggedInUsers.guard';
+import { JwtSubModule } from '../shared/Jwt.module';
 
 @NgModule({
     declarations: [
@@ -16,7 +17,8 @@ import { OnlyLoggedInUsersGuard } from '../shared/guards/OnlyLoggedInUsers.guard
     imports: [
         MatToolbarModule,
         MatSidenavModule,
-        EditPlaceRoutingModule
+        EditPlaceRoutingModule,
+        JwtSubModule
     ],
     providers: [OnlyLoggedInUsersGuard]
 })

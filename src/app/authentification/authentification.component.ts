@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 import { GlobalVariables } from '../shared/global.variable';
 import { LoginService } from '../shared/login.service';
 import { User } from '../shared/user.model';
@@ -26,6 +27,7 @@ export class AuthentificationComponent implements OnInit {
       password: ''
     });
     GlobalVariables.isLoggedIn = false;
+    localStorage.removeItem(environment.jwt);
   }
 
   Login() {
@@ -38,7 +40,8 @@ export class AuthentificationComponent implements OnInit {
     this.loginService.loginUser(user).subscribe(
       res => {
         GlobalVariables.isLoggedIn = true;
-        this.router.navigate([`/edit-list/${(res as User).id}`]);
+        localStorage.setItem(environment.jwt, res.token);
+        this.router.navigate([`/edit-list/${res.id}`]);
       },
       err => {
         console.log(err);

@@ -9,6 +9,8 @@ import { ConfirmDialogModel, ConfirmPageComponent } from 'src/app/confirm-page/c
 import { tenantService } from 'src/app/shared/tenant.service';
 import { flatService } from 'src/app/shared/flat.service';
 import { filter, switchMap } from 'rxjs';
+import { TokenService } from 'src/app/shared/token.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-tenant',
@@ -24,11 +26,12 @@ export class TenantComponent implements OnInit {
   private userID: number;
 
   constructor(
-    public service: tenantService,
-    public serviceFlat: flatService,
+    public tenantService: tenantService,
+    public flatService: flatService,
     private dialog: MatDialog,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private tokenService: TokenService
   ) { }
 
   public columnsToDisplay = [
@@ -56,10 +59,12 @@ export class TenantComponent implements OnInit {
     const dialogRef = this.dialog.open(TenantFormComponent, dialogConfig);
 
     dialogRef.afterClosed().pipe(
-      switchMap(() => this.service.getTenantsByUser(this.userID))
+      switchMap(() => this.tenantService.getTenantsByUser(this.userID))
     ).subscribe(tenantlist => {
       this.list = tenantlist;
-    })
+    });
+
+    this.refreshToken();
   }
 
   ngOnInit(): void {
@@ -70,7 +75,7 @@ export class TenantComponent implements OnInit {
 
     this.userID = parseInt(params[params.length - 3]);
 
-    this.service.getTenantsByUser(this.userID).subscribe(res => this.list = res);
+    this.tenantService.getTenantsByUser(this.userID).subscribe(res => this.list = res);
 
     this.activatedRoute.paramMap.subscribe(params => {
       const idSTR = params.get('id');
@@ -85,7 +90,7 @@ export class TenantComponent implements OnInit {
       if (isNaN(flatID))
         this.router.navigate(['']);
 
-      this.serviceFlat.getFlat(flatID).subscribe(res => {
+      this.flatService.getFlat(flatID).subscribe(res => {
         this.flat = res || new Flat();
       })
 
@@ -93,7 +98,7 @@ export class TenantComponent implements OnInit {
         this.router.navigate(['']);
 
 
-    })
+    });
   }
 
   populateForm(selectedTenant: Tenant) {
@@ -108,10 +113,12 @@ export class TenantComponent implements OnInit {
     const dialogRef = this.dialog.open(TenantFormComponent, dialogConfig);
 
     dialogRef.afterClosed().pipe(
-      switchMap(() => this.service.getTenantsByUser(this.userID))
+      switchMap(() => this.tenantService.getTenantsByUser(this.userID))
     ).subscribe(tenantlist => {
       this.list = tenantlist;
-    })
+    });
+
+    this.refreshToken();
   }
 
   onDelete(id: number) {
@@ -127,19 +134,18 @@ export class TenantComponent implements OnInit {
 
     dialogRef.afterClosed().pipe(
       filter(dialogResult => dialogResult),
-      switchMap(() => this.service.deleteTenant(id).pipe(
-        switchMap(() => this.service.getTenants())
+      switchMap(() => this.tenantService.deleteTenant(id).pipe(
+        switchMap(() => this.tenantService.getTenants())
       ))
     ).subscribe(res => {
       this.list = res.filter(t => t.flatID == this.flat.id);
-    })
+    });
+
+    this.refreshToken();
   }
 
   returnFlatNumber() {
-    if (this.flat == undefined)
-      return '';
-    else
-      return this.flat.flatNumber;
+    return this.flat ? this.flat.flatNumber : '';
   }
 
   fileSelect($event: any) {
@@ -153,8 +159,8 @@ export class TenantComponent implements OnInit {
         let csvRecordsArray = (csvData as string).split(/\r\n|\n/);
         for (let i = 0; i < csvRecordsArray.length; i++) {
           let rowdata = csvRecordsArray[i].match(/("[^"]*")|[^,]+/g);
-          this.service.postTenant(this.rowToTenant(rowdata as string[])).pipe(
-            switchMap(() => this.service.getTenants())
+          this.tenantService.postTenant(this.rowToTenant(rowdata as string[])).pipe(
+            switchMap(() => this.tenantService.getTenants())
           ).subscribe(tenantList => {
             this.list = tenantList.filter(t => t.flatID == this.flat.id);
           })
@@ -164,6 +170,8 @@ export class TenantComponent implements OnInit {
     else {
       alert("Only .csv files is valid");
     }
+
+    this.refreshToken();
   }
   rowToTenant(row: string[]) {
     const tenant = new Tenant();
@@ -177,4 +185,12 @@ export class TenantComponent implements OnInit {
     return tenant;
   }
 
+  private refreshToken() {
+    this.tokenService.refreshToken().subscribe(jwt => {
+      localStorage.setItem(environment.jwt, jwt);
+    },
+      err => {
+        console.log(err);
+      });
+  }
 }

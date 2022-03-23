@@ -9,6 +9,8 @@ import { ConfirmDialogModel, ConfirmPageComponent } from 'src/app/confirm-page/c
 import { flatService } from 'src/app/shared/flat.service';
 import { houseService } from 'src/app/shared/house.service';
 import { filter, switchMap } from 'rxjs';
+import { TokenService } from 'src/app/shared/token.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-flat',
@@ -24,11 +26,12 @@ export class FlatComponent implements OnInit {
   private userID: number;
 
   constructor(
-    public service: flatService,
-    public serviceHouse: houseService,
+    public flatService: flatService,
+    public houseService: houseService,
     private dialog: MatDialog,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private tokenService: TokenService
   ) {
   }
 
@@ -58,10 +61,12 @@ export class FlatComponent implements OnInit {
     const dialogRef = this.dialog.open(FlatFormComponent, dialogConfig);
 
     dialogRef.afterClosed().pipe(
-      switchMap(() => this.service.getFlatsByUser(this.userID))
+      switchMap(() => this.flatService.getFlatsByUser(this.userID))
     ).subscribe(flatList => {
       this.list = flatList;
-    })
+    });
+
+    this.refreshToken();
   }
 
   ngOnInit(): void {
@@ -72,7 +77,7 @@ export class FlatComponent implements OnInit {
 
     this.userID = parseInt(params[params.length - 3]);
 
-    this.service.getFlatsByUser(this.userID).subscribe(res => this.list = res);
+    this.flatService.getFlatsByUser(this.userID).subscribe(res => this.list = res);
 
     this.activatedRoute.paramMap.subscribe(params => {
       const idSTR = params.get('id');
@@ -89,14 +94,16 @@ export class FlatComponent implements OnInit {
         this.router.navigate(['']);
       }
 
-      this.serviceHouse.getHouse(houseID).subscribe(res => {
+      this.houseService.getHouse(houseID).subscribe(res => {
         this.house = res || new House();
       });
 
       if (this.house == new House()) {
         this.router.navigate(['']);
       }
-    })
+    });
+
+    this.refreshToken();
   }
 
   populateForm(selectedFlat: Flat) {
@@ -113,10 +120,12 @@ export class FlatComponent implements OnInit {
     const dialogRef = this.dialog.open(FlatFormComponent, dialogConfig);
 
     dialogRef.afterClosed().pipe(
-      switchMap(() => this.service.getFlatsByUser(this.userID))
+      switchMap(() => this.flatService.getFlatsByUser(this.userID))
     ).subscribe(res => {
       this.list = res.filter(f => f.houseID == this.house.id);
-    })
+    });
+
+    this.refreshToken();
   }
 
   onDelete(id: number) {
@@ -132,27 +141,18 @@ export class FlatComponent implements OnInit {
 
     dialogRef.afterClosed().pipe(
       filter(dialogResult => dialogResult),
-      switchMap(() => this.service.deleteFlat(id).pipe(
-        switchMap(() => this.service.getFlatsByUser(this.userID))
+      switchMap(() => this.flatService.deleteFlat(id).pipe(
+        switchMap(() => this.flatService.getFlatsByUser(this.userID))
       ))
     ).subscribe(res => {
       this.list = res.filter(f => f.houseID == this.house.id);
-    })
+    });
+
+    this.refreshToken();
   }
 
   returnHouse() {
-    // if(this._house) {
-    //   return this._house.city + " " + this._house.street + "-" + this._house.number + " " + this._house.postalID
-    // } else {
-    //   return '';
-    // }
-
-    // retur nthis._house ?  this._house.city + " " + this._house.street + "-" + this._house.number + " " + this._house.postalID : '';
-
-    if (this.house == undefined)
-      return '';
-    else
-      return this.house.city + " " + this.house.street + "-" + this.house.number + " " + this.house.postalID
+    return this.house ? this.house.city + " " + this.house.street + "-" + this.house.number + " " + this.house.postalID : '';
   }
 
   fileSelect($event: any) {
@@ -166,8 +166,8 @@ export class FlatComponent implements OnInit {
         let csvRecordsArray = (csvData as string).split(/\r\n|\n/);
         for (let i = 0; i < csvRecordsArray.length; i++) {
           let rowdata = csvRecordsArray[i].match(/("[^"]*")|[^,]+/g);
-          this.service.postFlat(this.rowToFlat(rowdata as string[])).pipe(
-            switchMap(() => this.service.getFlatsByUser(this.userID))
+          this.flatService.postFlat(this.rowToFlat(rowdata as string[])).pipe(
+            switchMap(() => this.flatService.getFlatsByUser(this.userID))
           ).subscribe(flatList => {
             this.list = flatList.filter(f => f.houseID == this.house.id);
           }
@@ -180,7 +180,10 @@ export class FlatComponent implements OnInit {
     else {
       alert("Only .csv files is valid");
     }
+
+    this.refreshToken();
   }
+
   rowToFlat(row: string[]) {
     const flat = new Flat();
     flat.flatNumber = row[0];
@@ -190,5 +193,14 @@ export class FlatComponent implements OnInit {
     flat.livingSpace = parseFloat(row[4]);
     flat.houseID = this.house.id;
     return flat;
+  }
+
+  private refreshToken() {
+    this.tokenService.refreshToken().subscribe(jwt => {
+      localStorage.setItem(environment.jwt, jwt);
+    },
+      err => {
+        console.log(err);
+      });
   }
 }

@@ -7,6 +7,8 @@ import { ConfirmDialogModel, ConfirmPageComponent } from 'src/app/confirm-page/c
 import { houseService } from 'src/app/shared/house.service';
 import { filter, switchMap } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TokenService } from 'src/app/shared/token.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-house',
@@ -22,10 +24,10 @@ export class HouseComponent implements OnInit {
   private userID: number;
 
   constructor(
-    public service: houseService,
+    public houseService: houseService,
     private dialog: MatDialog,
-    private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private tokenService: TokenService
   ) {
   }
 
@@ -49,11 +51,13 @@ export class HouseComponent implements OnInit {
     const dialogRef = this.dialog.open(HouseFormComponent, dialogConfig);
 
     dialogRef.afterClosed().pipe(
-      switchMap(() => this.service.getHousesByUser(this.userID))
+      switchMap(() => this.houseService.getHousesByUser(this.userID))
     )
       .subscribe(houselist => {
         this.list = houselist;
       });
+
+    this.refreshToken();
   }
 
   ngOnInit(): void {
@@ -62,10 +66,8 @@ export class HouseComponent implements OnInit {
     var params = url.split('/');
 
     this.userID = parseInt(params[params.length - 2]);
-    
-    console.log(this.userID);
 
-    this.service.getHousesByUser(this.userID).subscribe(res => this.list = res);
+    this.houseService.getHousesByUser(this.userID).subscribe(res => this.list = res);
   }
 
   populateForm(selectedHouse: House) {
@@ -82,12 +84,14 @@ export class HouseComponent implements OnInit {
     const dialogRef = this.dialog.open(HouseFormComponent, dialogConfig);
 
     dialogRef.afterClosed().pipe(
-      switchMap(()=>this.service.getHousesByUser(this.userID))
+      switchMap(() => this.houseService.getHousesByUser(this.userID))
     ).subscribe(
-      res=>{
+      res => {
         this.list = res;
       }
-    )
+    );
+
+    this.refreshToken();
   }
 
   onDelete(id: number) {
@@ -103,13 +107,14 @@ export class HouseComponent implements OnInit {
 
     dialogRef.afterClosed().pipe(
       filter(isConfirm => isConfirm),
-      switchMap(() => this.service.deleteHouse(id).pipe(
-        switchMap(() => this.service.getHousesByUser(this.userID))
+      switchMap(() => this.houseService.deleteHouse(id).pipe(
+        switchMap(() => this.houseService.getHousesByUser(this.userID))
       ))
     ).subscribe(houseList => {
       this.list = houseList;
     });
 
+    this.refreshToken();
   }
 
   fileSelect($event: any) {
@@ -123,8 +128,8 @@ export class HouseComponent implements OnInit {
         let csvRecordsArray = (csvData as string).split(/\r\n|\n/);
         for (let i = 0; i < csvRecordsArray.length; i++) {
           let rowdata = csvRecordsArray[i].match(/("[^"]*")|[^,]+/g);
-          this.service.postHouse(this.rowToHouse(rowdata as string[])).pipe(
-            switchMap(() => this.service.getHousesByUser(this.userID))
+          this.houseService.postHouse(this.rowToHouse(rowdata as string[])).pipe(
+            switchMap(() => this.houseService.getHousesByUser(this.userID))
           )
             .subscribe(houseList => {
               this.list = houseList;
@@ -138,6 +143,8 @@ export class HouseComponent implements OnInit {
     else {
       alert("Only .csv files is valid");
     }
+
+    this.refreshToken();
   }
 
   rowToHouse(row: string[]) {
@@ -148,5 +155,14 @@ export class HouseComponent implements OnInit {
     house.postalID = row[3];
     house.UserOwnerID = this.userID;
     return house;
+  }
+
+  private refreshToken() {
+    this.tokenService.refreshToken().subscribe(jwt => {
+      localStorage.setItem(environment.jwt, jwt);
+    },
+      err => {
+        console.log(err);
+      });
   }
 }

@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from "@angular/material/input";
+import { JwtSubModule } from "../shared/Jwt.module";
 
 import { AuthentificationRoutingModule } from "./authentification-routing.module";
 import { AuthentificationComponent } from "./authentification.component";
@@ -14,7 +15,8 @@ import { AuthentificationComponent } from "./authentification.component";
         AuthentificationRoutingModule,
         MatFormFieldModule,
         ReactiveFormsModule,
-        MatInputModule
+        MatInputModule,
+        JwtSubModule
     ],
     exports: [],
     declarations: [

@@ -1,16 +1,21 @@
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from "@angular/router";
-import { GlobalVariables } from "../global.variable";
+import { Injectable } from "@angular/core";
+import { CanActivate, Router } from "@angular/router";
+import { JwtHelperService } from "@auth0/angular-jwt";
 
+@Injectable()
 export class OnlyLoggedInUsersGuard implements CanActivate {
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        console.log("OnlyLoggedInUsersGuard");
-        console.log(route);
-        if (GlobalVariables.isLoggedIn) {
+    constructor(private router: Router, private jwtHelper: JwtHelperService){
+    }
+
+    canActivate(): boolean {
+        const token = localStorage.getItem("jwt");
+
+        if(token && !this.jwtHelper.isTokenExpired(token)){
             return true;
         }
-        else {
-            
+        else{
+            this.router.navigate(["authentification"]);
             return false;
         }
     }

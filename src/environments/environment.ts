@@ -4,7 +4,9 @@
 
 export const environment = {
   production: false,
-  serverURL: "https://localhost:7047"
+  serverURL: "https://localhost:7047",
+  serverDomain: 'localhost:7047',
+  jwt: 'jwt'
 };
 
 /*
