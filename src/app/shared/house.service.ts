@@ -31,7 +31,7 @@ export class houseService {
     }
 
     getHouse(id: number) {
-        return this.http.get<House>(`${environment.serverURL}/api/Houses/byID${id}`, this.getOptions())
+        return this.http.get<House>(`${environment.serverURL}/api/Houses/byID/${id}`, this.getOptions())
     }
 
     private getOptions() {

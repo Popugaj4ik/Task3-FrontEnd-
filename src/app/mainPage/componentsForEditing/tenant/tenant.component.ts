@@ -11,6 +11,7 @@ import { flatService } from 'src/app/shared/flat.service';
 import { filter, switchMap } from 'rxjs';
 import { TokenService } from 'src/app/shared/token.service';
 import { environment } from 'src/environments/environment';
+import { House } from 'src/app/shared/house.model';
 
 @Component({
   selector: 'app-tenant',
@@ -61,7 +62,7 @@ export class TenantComponent implements OnInit {
     dialogRef.afterClosed().pipe(
       switchMap(() => this.tenantService.getTenantsByUser(this.userID))
     ).subscribe(tenantlist => {
-      this.list = tenantlist;
+      this.list = tenantlist.filter(t => t.flatID == this.flat.id);
     });
 
     this.refreshToken();
@@ -75,30 +76,36 @@ export class TenantComponent implements OnInit {
 
     this.userID = parseInt(params[params.length - 3]);
 
-    this.tenantService.getTenantsByUser(this.userID).subscribe(res => this.list = res);
+    this.activatedRoute.paramMap.pipe(
+      switchMap(params => {
+        const idSTR = params.get('id');
 
-    this.activatedRoute.paramMap.subscribe(params => {
-      const idSTR = params.get('id');
+        let flatID: number = NaN;
 
-      let flatID: number = NaN;
+        if (idSTR)
+          flatID = parseInt(idSTR);
+        else
+          this.router.navigate(['']);
 
-      if (idSTR)
-        flatID = parseInt(idSTR);
-      else
-        this.router.navigate(['']);
+        if (isNaN(flatID))
+          this.router.navigate(['']);
 
-      if (isNaN(flatID))
-        this.router.navigate(['']);
-
-      this.flatService.getFlat(flatID).subscribe(res => {
+        return this.flatService.getFlat(flatID)
+      }
+      ),
+      switchMap(res => {
         this.flat = res || new Flat();
+
+        if (this.flat === new Flat())
+          this.router.navigate(['']);
+
+        return this.tenantService.getTenantsByUser(this.userID)
       })
-
-      if (this.flat == new Flat())
-        this.router.navigate(['']);
-
-
+    ).subscribe(res => {
+      this.list = res.filter(t => t.flatID == this.flat.id);
     });
+
+    this.refreshToken();
   }
 
   populateForm(selectedTenant: Tenant) {
@@ -107,7 +114,8 @@ export class TenantComponent implements OnInit {
     dialogConfig.disableClose = true;
     dialogConfig.data = {
       tenant: tenant,
-      isEdit: true
+      isEdit: true,
+      userID: this.userID
     };
 
     const dialogRef = this.dialog.open(TenantFormComponent, dialogConfig);
@@ -115,7 +123,7 @@ export class TenantComponent implements OnInit {
     dialogRef.afterClosed().pipe(
       switchMap(() => this.tenantService.getTenantsByUser(this.userID))
     ).subscribe(tenantlist => {
-      this.list = tenantlist;
+      this.list = tenantlist.filter(t => t.flatID == this.flat.id);
     });
 
     this.refreshToken();
@@ -187,7 +195,7 @@ export class TenantComponent implements OnInit {
 
   private refreshToken() {
     this.tokenService.refreshToken().subscribe(jwt => {
-      localStorage.setItem(environment.jwt, jwt);
+      localStorage.setItem(environment.jwt, jwt.token);
     },
       err => {
         console.log(err);

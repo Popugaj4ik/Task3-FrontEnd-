@@ -95,7 +95,7 @@ export class TenantFormComponent implements OnInit {
   }
 
   filterFlats(HouseID: number) {
-    return this.flatList.filter(f => f.houseID == HouseID);
+    return this.flatList.filter(f => f.houseID === HouseID);
   }
 
   isEditing() {

@@ -77,30 +77,35 @@ export class FlatComponent implements OnInit {
 
     this.userID = parseInt(params[params.length - 3]);
 
-    this.flatService.getFlatsByUser(this.userID).subscribe(res => this.list = res);
+    this.activatedRoute.paramMap.pipe(
+      switchMap(params => {
+        const idSTR = params.get('id');
 
-    this.activatedRoute.paramMap.subscribe(params => {
-      const idSTR = params.get('id');
+        let houseID: number = NaN;
 
-      let houseID: number = NaN;
+        if (idSTR) {
+          houseID = parseInt(idSTR);
+        } else {
+          this.router.navigate(['']);
+        }
 
-      if (idSTR) {
-        houseID = parseInt(idSTR);
-      } else {
-        this.router.navigate(['']);
-      }
+        if (isNaN(houseID)) {
+          this.router.navigate(['']);
+        }
 
-      if (isNaN(houseID)) {
-        this.router.navigate(['']);
-      }
-
-      this.houseService.getHouse(houseID).subscribe(res => {
+        return this.houseService.getHouse(houseID)
+      }),
+      switchMap(res => {
         this.house = res || new House();
-      });
 
-      if (this.house == new House()) {
-        this.router.navigate(['']);
-      }
+        if (this.house === new House()) {
+          this.router.navigate(['']);
+        }
+
+        return this.flatService.getFlatsByUser(this.userID);
+      })
+    ).subscribe(res => {
+      this.list = res.filter(f => f.houseID == this.house.id);
     });
 
     this.refreshToken();
@@ -197,7 +202,7 @@ export class FlatComponent implements OnInit {
 
   private refreshToken() {
     this.tokenService.refreshToken().subscribe(jwt => {
-      localStorage.setItem(environment.jwt, jwt);
+      localStorage.setItem(environment.jwt, jwt.token);
     },
       err => {
         console.log(err);

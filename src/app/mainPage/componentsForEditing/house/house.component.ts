@@ -68,6 +68,8 @@ export class HouseComponent implements OnInit {
     this.userID = parseInt(params[params.length - 2]);
 
     this.houseService.getHousesByUser(this.userID).subscribe(res => this.list = res);
+
+    this.refreshToken();
   }
 
   populateForm(selectedHouse: House) {
@@ -159,7 +161,7 @@ export class HouseComponent implements OnInit {
 
   private refreshToken() {
     this.tokenService.refreshToken().subscribe(jwt => {
-      localStorage.setItem(environment.jwt, jwt);
+      localStorage.setItem(environment.jwt, jwt.token);
     },
       err => {
         console.log(err);
